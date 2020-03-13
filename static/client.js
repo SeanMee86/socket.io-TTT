@@ -98,36 +98,52 @@ const cellClickHandler = () => {
         })
 };
 
-// Check To See if The Player Has Won
-const checkWinCondition = (player) => {
+/********* Win Conditions *********/
 
-    // Check for Win by Row Completion
-    const rowCheck = fullBoard
+// Check for Win by Row Completion
+const checkRow = (player) => {
+    fullBoard
         .map(row => row
             .filter(cell => cell === player)
-        );
-    rowCheck.forEach(row => row.length === boardSize ? console.log(`Player${player} has won`) : null);
+        )
+        .forEach(row => {
+            if(row.length === boardSize) console.log(`Player${player} has won`);
+        });
+};
 
-    // Check for Win by Column Completion
-    const colCheck = fullBoard
+// Check for Win by Column Completion
+const checkCol = (player) => {
+    fullBoard
         .map((row, ind) => row
             .reduce((acc, val, i) => {
                 return acc.concat(fullBoard[i][ind])
             },[]).filter(cell => cell === player)
-        );
-    colCheck.forEach(col => col.length === boardSize ? console.log(`Player${player} has won`) : null);
+        )
+        .forEach(col => {
+            if(col.length === boardSize) console.log(`Player${player} has won`);
+        });
+};
 
-    // Check for Win by Diagonal Completion Left to Right
-    const diagCheck1 = fullBoard.reduce((acc, val, i) => {
+// Check for Win by Diagonal Completion Left to Right
+const checkDiag1 = (player) => {
+    if(fullBoard.reduce((acc, val, i) => {
         return acc.concat(val[i]);
-    },[]).filter(cell => cell === player);
-    diagCheck1.length === boardSize ? console.log(`Player${player} has won`) : null;
+    },[]).filter(cell => cell === player).length === boardSize) console.log(`Player${player} has won`);
+};
 
-    // Check for Win by Diagonal Completion Right to Left
-    const diagCheck2 = fullBoard.reduce((acc, val, i) => {
+// Check for Win by Diagonal Completion Right to Left
+const checkDiag2 = (player) => {
+    if(fullBoard.reduce((acc, val, i) => {
         return acc.concat(val[fullBoard.length-(1+i)]);
-    },[]).filter(cell => cell === player);
-    diagCheck2.length === boardSize ? console.log(`Player${player} has won`) : null;
+    },[]).filter(cell => cell === player).length === boardSize) console.log(`Player${player} has won`);
+};
+
+// Check To See if The Player Has Won
+const checkWinCondition = (player) => {
+    checkRow(player);
+    checkCol(player);
+    checkDiag1(player);
+    checkDiag2(player);
 };
 
 // Rebuild Board On Update From Server
