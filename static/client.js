@@ -1,5 +1,7 @@
 const socket = io();
 let fullBoard;
+let boardSize;
+boardSize = 3;
 
 const clientPlayer = {
     id: null,
@@ -15,7 +17,7 @@ window.onload = function() {
 };
 
 const gameStart = () => {
-    buildGameBoard(3);
+    buildGameBoard(boardSize);
     cellClickHandler();
     if(clientPlayer.id === 1) clientPlayer.isTurn = true;
 };
@@ -79,7 +81,7 @@ const cellClicked = (e) => {
         fullBoard[row][col] = clientPlayer.id;
 
         // Send Updated Board to Server
-        socket.emit('updateBoard', fullBoard);
+        socket.emit('updateBoard', {fullBoard, clientPlayer});
 
         // Disallow Players Turn Until Opponent Has Had Their Turn
         clientPlayer.isTurn = false
@@ -96,8 +98,40 @@ const cellClickHandler = () => {
         })
 };
 
+// Check To See if The Player Has Won
+const checkWinCondition = (player) => {
+
+    // Check for Win by Row Completion
+    const rowCheck = fullBoard
+        .map(row => row
+            .filter(cell => cell === player)
+        );
+    rowCheck.forEach(row => row.length === boardSize ? console.log(`Player${player} has won`) : null);
+
+    // Check for Win by Column Completion
+    const colCheck = fullBoard
+        .map((row, ind) => row
+            .reduce((acc, val, i) => {
+                return acc.concat(fullBoard[i][ind])
+            },[]).filter(cell => cell === player)
+        );
+    colCheck.forEach(col => col.length === boardSize ? console.log(`Player${player} has won`) : null);
+
+    // Check for Win by Diagonal Completion Left to Right
+    const diagCheck1 = fullBoard.reduce((acc, val, i) => {
+        return acc.concat(val[i]);
+    },[]).filter(cell => cell === player);
+    diagCheck1.length === boardSize ? console.log(`Player${player} has won`) : null;
+
+    // Check for Win by Diagonal Completion Right to Left
+    const diagCheck2 = fullBoard.reduce((acc, val, i) => {
+        return acc.concat(val[fullBoard.length-(1+i)]);
+    },[]).filter(cell => cell === player);
+    diagCheck2.length === boardSize ? console.log(`Player${player} has won`) : null;
+};
+
 // Rebuild Board On Update From Server
-const rebuildBoard = () => {
+const rebuildBoard = (lastPlayer) => {
     // Remove Old Board
     document.getElementById('gameBoard').innerHTML = '';
 
@@ -110,7 +144,10 @@ const rebuildBoard = () => {
     });
 
     // Reapply Click Functionality
-    cellClickHandler()
+    cellClickHandler();
+
+    // Check To See if the Last Move Won the Game
+    checkWinCondition(lastPlayer);
 };
 
 /************ Handlers for Server Events *************/
@@ -138,10 +175,10 @@ socket.on('opponentHasSelected', (data) => {
 // Send Update Event from Server Holds the New Board after Our Opponent has Clicked a Cell, Emitted to all Clients
 socket.on('sendUpdate', board => {
     // Set Our Global Board Array = to the Updated Board from Server
-    fullBoard = board;
+    fullBoard = board.fullBoard;
 
     // Rebuild the Board with our New Global Board Array
-    rebuildBoard();
+    rebuildBoard(board.playerID);
 });
 
 // Change Player Event is Only Emitted to the Player who DID NOT Trigger the Update Board Event To Server
