@@ -5,53 +5,13 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./styles.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./client.js"></script>
     <title>Document</title>
-    <style>
-        #gameBoard {
-            width: 60vw;
-            height: 60vw;
-            background: beige;
-            margin: auto;
-            display: grid;
-            grid-template-columns: auto auto auto;
-            grid-template-rows: auto auto auto;
-        }
-
-        .gameCell {
-            border: 1px solid black;
-        }
-
-        #charSelectModal {
-            width: 100vw;
-            height: 100vh;
-            position: absolute;
-            top: 0;
-            left: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: rgba(20, 20, 20, 0.5);
-        }
-
-        #charSelect {
-            width: 40vw;
-            height: 40vh;
-            background: #e3e3e3;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        input[disabled=disabled] label {
-            color: red;
-        }
-
-    </style>
 </head>
 <body>
 <div id="gameBoard"></div>
-
 <div id="charSelectModal">
     <div id="charSelect">
         <p><input name="player" id="player1" type="radio" value="1"><label for="player1">Player 1</label></p>
@@ -59,10 +19,5 @@
         <button id="charSelectBtn">Choose Player</button>
     </div>
 </div>
-
-
-
-<script src="/socket.io/socket.io.js"></script>
-<script src="./client.js"></script>
 </body>
 </html>
