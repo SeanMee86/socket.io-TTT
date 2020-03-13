@@ -16,7 +16,7 @@ io.on('connection', (socket) => {
         })
     });
     socket.on('updateBoard', board => {
-        io.emit('sendUpdate', board);
+        io.emit('sendUpdate', {fullBoard: board.fullBoard, playerID: board.clientPlayer.id});
         socket.broadcast.emit('changePlayer');
     });
     socket.on('disconnect', () => {

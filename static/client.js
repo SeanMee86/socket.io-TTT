@@ -79,7 +79,7 @@ const cellClicked = (e) => {
         fullBoard[row][col] = clientPlayer.id;
 
         // Send Updated Board to Server
-        socket.emit('updateBoard', fullBoard);
+        socket.emit('updateBoard', {fullBoard, clientPlayer});
 
         // Disallow Players Turn Until Opponent Has Had Their Turn
         clientPlayer.isTurn = false
@@ -96,8 +96,15 @@ const cellClickHandler = () => {
         })
 };
 
+const checkWinCondition = (player) => {
+    const rowCheck = fullBoard.map(row => row.filter(cell => cell === player));
+    const colCheck = fullBoard.map((row, ind) => row.map((_) => row[ind]));
+    console.log(colCheck);
+    rowCheck.forEach(row => row.length === 3 ? console.log(`Player${player} has won`) : null)
+};
+
 // Rebuild Board On Update From Server
-const rebuildBoard = () => {
+const rebuildBoard = (lastPlayer) => {
     // Remove Old Board
     document.getElementById('gameBoard').innerHTML = '';
 
@@ -110,7 +117,8 @@ const rebuildBoard = () => {
     });
 
     // Reapply Click Functionality
-    cellClickHandler()
+    cellClickHandler();
+    checkWinCondition(lastPlayer);
 };
 
 /************ Handlers for Server Events *************/
@@ -138,10 +146,10 @@ socket.on('opponentHasSelected', (data) => {
 // Send Update Event from Server Holds the New Board after Our Opponent has Clicked a Cell, Emitted to all Clients
 socket.on('sendUpdate', board => {
     // Set Our Global Board Array = to the Updated Board from Server
-    fullBoard = board;
+    fullBoard = board.fullBoard;
 
     // Rebuild the Board with our New Global Board Array
-    rebuildBoard();
+    rebuildBoard(board.playerID);
 });
 
 // Change Player Event is Only Emitted to the Player who DID NOT Trigger the Update Board Event To Server
