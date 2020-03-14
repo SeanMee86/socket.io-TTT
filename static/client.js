@@ -115,9 +115,9 @@ const checkRow = (player) => {
 const checkCol = (player) => {
     fullBoard
         .map((row, ind) => row
-            .reduce((acc, val, i) => {
-                return acc.concat(fullBoard[i][ind])
-            },[]).filter(cell => cell === player)
+            .map((_, i) => {
+                return fullBoard[i][ind]
+            }).filter(cell => cell === player)
         )
         .forEach(col => {
             if(col.length === boardSize) console.log(`Player${player} has won`);
