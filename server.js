@@ -10,16 +10,24 @@ const io = socketio(expressServer);
 
 io.on('connection', (socket) => {
     socket.on('playerSelectionToServer', player => {
-        socket.broadcast.emit('opponentHasSelected', {
+        socket.to(player.room).emit('opponentHasSelected', {
             player,
             message: 'Opponent Has Selected'
         })
     });
     socket.on('updateBoard', board => {
-        io.emit('sendUpdate', {fullBoard: board.fullBoard, playerID: board.clientPlayer.id});
-        socket.broadcast.emit('changePlayer');
+        io.in(board.clientPlayer.room).emit('sendUpdate', {fullBoard: board.fullBoard, playerID: board.clientPlayer.id});
+        socket.to(board.clientPlayer.room).emit('changePlayer');
     });
     socket.on('disconnect', () => {
         io.emit('playerDisconnect')
+    });
+    socket.on('joinRoom', roomToJoin => {
+        if(!socket.adapter.rooms[roomToJoin] || socket.adapter.rooms[roomToJoin].length < 2 ){
+            socket.join(roomToJoin);
+            console.log(`Joined ${roomToJoin}`);
+        }else{
+            console.log('Room is full')
+        }
     })
 });

@@ -5,7 +5,8 @@ boardSize = 3;
 
 const clientPlayer = {
     id: null,
-    isTurn: false
+    isTurn: false,
+    room: null
 };
 
 const opponentPlayer = {
@@ -14,6 +15,7 @@ const opponentPlayer = {
 
 window.onload = function() {
     selectPlayerHandler();
+    joinRoomHandler();
 };
 
 const gameStart = () => {
@@ -39,6 +41,21 @@ const buildGameBoard = (boardSize) => {
     })
 };
 
+// Join Room Functionality
+
+const joinRoom = () => {
+    clientPlayer.room = document.getElementById('roomName').value;
+    document.getElementById('roomSelect').style.display = 'none';
+    document.getElementById('charSelect').style.display = 'flex';
+    socket.emit('joinRoom', clientPlayer.room);
+};
+
+// Apply click listener for joining room
+
+const joinRoomHandler = () => {
+    document.getElementById('roomBtn').addEventListener('click', joinRoom);
+};
+
 // Select Player functionality
 
 const selectPlayer = () => {
@@ -51,7 +68,7 @@ const selectPlayer = () => {
     clientPlayer.id = parseInt(playerSelected.value);
 
     // Remove Select Player Modal
-    document.getElementById('charSelectModal').style.display = 'none';
+    document.getElementById('gameStartModal').style.display = 'none';
 
     // Emit Player Selection to Server
     socket.emit('playerSelectionToServer', clientPlayer);
