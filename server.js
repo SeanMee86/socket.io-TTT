@@ -9,6 +9,14 @@ const expressServer = app.listen(PORT, console.log(`Listening on port: ${PORT}`)
 const io = socketio(expressServer);
 
 io.on('connection', (socket) => {
+    socket.on('joinRoom', roomToJoin => {
+        if(!socket.adapter.rooms[roomToJoin] || socket.adapter.rooms[roomToJoin].length < 2 ){
+            socket.join(roomToJoin);
+            console.log(`Joined ${roomToJoin}`);
+        }else{
+            console.log('Room is full')
+        }
+    });
     socket.on('playerSelectionToServer', player => {
         socket.to(player.room).emit('opponentHasSelected', {
             player,
@@ -22,12 +30,4 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         io.emit('playerDisconnect')
     });
-    socket.on('joinRoom', roomToJoin => {
-        if(!socket.adapter.rooms[roomToJoin] || socket.adapter.rooms[roomToJoin].length < 2 ){
-            socket.join(roomToJoin);
-            console.log(`Joined ${roomToJoin}`);
-        }else{
-            console.log('Room is full')
-        }
-    })
 });
