@@ -2,11 +2,23 @@ const socket = io();
 let fullBoard;
 let boardSize = 3;
 
+const characters = [
+    {
+        name: 'Mario',
+        img: './assets/images/220px-MarioNSMBUDeluxe.png'
+    },
+    {
+        name: 'Luigi',
+        img: './assets/images/696px-Luigi_New_Super_Mario_Bros_U_Deluxe.png'
+    }
+];
+
 const clientPlayer = {
     id: null,
     isTurn: false,
     room: null,
-    gameStarted: false
+    gameStarted: false,
+    character: null
 };
 
 const opponentPlayer = {
@@ -69,6 +81,18 @@ const selectPlayer = () => {
     // Player ID = Value of Selected Player Radio Button
     clientPlayer.id = parseInt(playerSelected.value);
 
+    // Assign character to Player
+    switch(clientPlayer.id) {
+        case 1:
+            clientPlayer.character = characters[0];
+            break;
+        case 2:
+            clientPlayer.character = characters[1];
+            break;
+        default:
+            clientPlayer.character = null;
+    }
+
     // Remove Select Player Modal
     document.getElementById('gameStartModal').style.display = 'none';
 
@@ -123,10 +147,12 @@ const cellClickHandler = () => {
 const checkRow = (player) => {
     fullBoard
         .map(row => row
-            .filter(cell => cell === player)
+            .filter(cell => cell === player.id)
         )
         .forEach(row => {
-            if(row.length === boardSize) console.log(`Player${player} has won`);
+            if(row.length === boardSize) {
+                showWin(player.character)
+            }
         });
 };
 
@@ -136,10 +162,12 @@ const checkCol = (player) => {
         .map((row, ind) => row
             .map((_, i) => {
                 return fullBoard[i][ind]
-            }).filter(cell => cell === player)
+            }).filter(cell => cell === player.id)
         )
         .forEach(col => {
-            if(col.length === boardSize) console.log(`Player${player} has won`);
+            if(col.length === boardSize) {
+                showWin(player.character)
+            }
         });
 };
 
@@ -147,14 +175,18 @@ const checkCol = (player) => {
 const checkDiag1 = (player) => {
     if(fullBoard.reduce((acc, val, i) => {
         return acc.concat(val[i]);
-    },[]).filter(cell => cell === player).length === boardSize) console.log(`Player${player} has won`);
+    },[]).filter(cell => cell === player.id).length === boardSize){
+        showWin(player.character)
+    }
 };
 
 // Check for Win by Diagonal Completion Right to Left
 const checkDiag2 = (player) => {
     if(fullBoard.reduce((acc, val, i) => {
         return acc.concat(val[fullBoard.length-(1+i)]);
-    },[]).filter(cell => cell === player).length === boardSize) console.log(`Player${player} has won`);
+    },[]).filter(cell => cell === player.id).length === boardSize){
+        showWin(player.character)
+    }
 };
 
 // Check To See if The Player Has Won
@@ -165,8 +197,10 @@ const checkWinCondition = (player) => {
     checkDiag2(player);
 };
 
-const showWin = () => {
-
+const showWin = (character) => {
+    const gameOverScreen = document.getElementById('gameOverModal');
+    gameOverScreen.innerHTML = `<div class="gameWinner"><p>${character.name} Has Won!!!</p><br><img src="${character.img}" alt="${character.name}" /> </div>`;
+    gameOverScreen.style.display = 'flex';
 };
 
 // Rebuild Board On Update From Server
@@ -178,7 +212,11 @@ const rebuildBoard = (lastPlayer) => {
     fullBoard.forEach((row, rowInd) => {
         row.forEach((cell, cellInd) => {
             document.getElementById('gameBoard')
-                .innerHTML += `<div col='${cellInd+1}' row="${rowInd+1}" class="gameCell">${cell === 1 ? 'X' : cell === 2 ? 'O' : ''}</div>`
+                .innerHTML += `<div 
+                    col='${cellInd + 1}' 
+                    row="${rowInd + 1}" 
+                    style="background: url(${cell === 1 ? characters[0].img : cell === 2 ? characters[1].img : ''}) center/50% no-repeat;" 
+                    class="gameCell"></div>`
         })
     });
 
@@ -217,7 +255,7 @@ socket.on('sendUpdate', board => {
     fullBoard = board.fullBoard;
 
     // Rebuild the Board with our New Global Board Array
-    rebuildBoard(board.playerID);
+    rebuildBoard(board.player);
 });
 
 // Change Player Event is Only Emitted to the Player who DID NOT Trigger the Update Board Event To Server

@@ -10,6 +10,11 @@
     grid-template-rows: auto auto auto;
 }
 
+@font-face {
+    font-family: 'MarioFont';
+    src: url("./assets/fonts/SuperPlumberBrothers-y00V.ttf")
+}
+
 #gameRoomName {
     font-family: 'Roboto', sans-serif;
     padding: 20px;
@@ -25,16 +30,26 @@
     display: none;
 }
 
-#gameStartModal {
+#gameStartModal, #gameOverModal {
     width: 100vw;
     height: 100vh;
     position: absolute;
     top: 0;
     left: 0;
-    display: flex;
     justify-content: center;
     align-items: center;
     background-color: rgba(20, 20, 20, 0.5);
+}
+
+#gameStartModal {
+    display: flex;
+}
+
+#gameOverModal {
+    display: none;
+    font-family: MarioFont, sans-serif;
+    font-size: 2.6rem;
+    color: #fff;
 }
 
 #charSelect, #roomSelect {
@@ -61,6 +76,7 @@
     transform: translateX(-50%);
     color: red;
 }
+
 
 input[disabled=disabled] ~ label {
     color: red;

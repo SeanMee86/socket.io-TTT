@@ -34,7 +34,7 @@ io.on('connection', (socket) => {
         if(io.sockets.adapter.sids[socket.id][board.clientPlayer.room] !== undefined) {
             io.in(board.clientPlayer.room).emit('sendUpdate', {
                 fullBoard: board.fullBoard,
-                playerID: board.clientPlayer.id
+                player: board.clientPlayer
             });
             socket.to(board.clientPlayer.room).emit('changePlayer');
         }
