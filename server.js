@@ -12,6 +12,10 @@ io.on('connection', (socket) => {
     socket.on('joinRoom', roomToJoin => {
         if(!socket.adapter.rooms[roomToJoin] || socket.adapter.rooms[roomToJoin].length < 2 ){
             socket.join(roomToJoin);
+            console.log(socket.adapter.rooms[roomToJoin].length);
+            if(socket.adapter.rooms[roomToJoin].length === 2){
+                socket.to(roomToJoin).emit('getOpponent');
+            }
         }else{
             console.log('Room is full')
         }
@@ -27,8 +31,13 @@ io.on('connection', (socket) => {
     });
 
     socket.on('updateBoard', board => {
-        io.in(board.clientPlayer.room).emit('sendUpdate', {fullBoard: board.fullBoard, playerID: board.clientPlayer.id});
-        socket.to(board.clientPlayer.room).emit('changePlayer');
+        if(io.sockets.adapter.sids[socket.id][player.room] !== undefined) {
+            io.in(board.clientPlayer.room).emit('sendUpdate', {
+                fullBoard: board.fullBoard,
+                playerID: board.clientPlayer.id
+            });
+            socket.to(board.clientPlayer.room).emit('changePlayer');
+        }
     });
 
     socket.on('disconnect', () => {

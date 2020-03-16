@@ -219,3 +219,9 @@ socket.on('changePlayer', _ => {
     // Set Our Clients Turn to True
     clientPlayer.isTurn = true;
 });
+
+socket.on('getOpponent', () => {
+    if(clientPlayer.id !== null) {
+        socket.emit('playerSelectionToServer', clientPlayer);
+    }
+});
