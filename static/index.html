@@ -5,16 +5,29 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./styles.css">
     <script src="/socket.io/socket.io.js"></script>
     <script src="./client.js"></script>
     <title>Document</title>
 </head>
 <body>
+<div id="gameRoomName"></div>
 <div id="gameBoard"></div>
 <div id="gameStartModal">
     <div id="roomSelect">
-        <p><label for="roomName">Enter Room Name: </label><input id="roomName" type="text"></p>
+        <div class="roomFullMessage"></div>
+        <p>
+            <label for="roomName">Enter Room Name: </label>
+            <input
+                    onfocus="(
+                        function(){
+                            document.querySelector('.roomFullMessage').innerHTML=''
+                        }
+                    )()"
+                    id="roomName"
+                    type="text" />
+        </p>
         <button id="roomBtn">Submit</button>
     </div>
     <div id="charSelect">

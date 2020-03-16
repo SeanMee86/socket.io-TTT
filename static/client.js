@@ -1,12 +1,12 @@
 const socket = io();
 let fullBoard;
-let boardSize;
-boardSize = 3;
+let boardSize = 3;
 
 const clientPlayer = {
     id: null,
     isTurn: false,
-    room: null
+    room: null,
+    gameStarted: false
 };
 
 const opponentPlayer = {
@@ -19,9 +19,13 @@ window.onload = function() {
 };
 
 const gameStart = () => {
-    buildGameBoard(boardSize);
-    cellClickHandler();
-    if(clientPlayer.id === 1) clientPlayer.isTurn = true;
+    if(!clientPlayer.gameStarted) {
+        document.getElementById('gameRoomName').innerText = clientPlayer.room;
+        buildGameBoard(boardSize);
+        cellClickHandler();
+        if (clientPlayer.id === 1) clientPlayer.isTurn = true;
+        clientPlayer.gameStarted = true
+    }
 };
 
 // Initial Build of Tic Tac Toe Board in DOM
@@ -45,8 +49,6 @@ const buildGameBoard = (boardSize) => {
 
 const joinRoom = () => {
     clientPlayer.room = document.getElementById('roomName').value;
-    document.getElementById('roomSelect').style.display = 'none';
-    document.getElementById('charSelect').style.display = 'flex';
     socket.emit('joinRoom', clientPlayer.room);
 };
 
@@ -163,6 +165,10 @@ const checkWinCondition = (player) => {
     checkDiag2(player);
 };
 
+const showWin = () => {
+
+};
+
 // Rebuild Board On Update From Server
 const rebuildBoard = (lastPlayer) => {
     // Remove Old Board
@@ -224,4 +230,15 @@ socket.on('getOpponent', () => {
     if(clientPlayer.id !== null) {
         socket.emit('playerSelectionToServer', clientPlayer);
     }
+});
+
+socket.on('roomJoined', () => {
+    document.getElementById('roomSelect').style.display = 'none';
+    document.getElementById('charSelect').style.display = 'flex';
+});
+
+socket.on('roomIsFull', () => {
+    document
+        .querySelector('.roomFullMessage')
+        .innerHTML = '<span class="error-message">We are sorry but the room you have chosen is full, please enter a new room.</span>'
 });
