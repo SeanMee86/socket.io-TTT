@@ -1,4 +1,7 @@
 #gameBoard {
+    font-size: 1.7rem;
+    font-family: 'Roboto', sans-serif;
+    position: relative;
     max-width: 800px;
     max-height: 800px;
     width: 80vw;
@@ -22,6 +25,13 @@
     font-size: 2.7rem;
 }
 
+.wait-for-player {
+    white-space: nowrap;
+    position: absolute;
+    top: 10%;
+    left: 10%;
+}
+
 .gameCell {
     border: 1px solid black;
 }
@@ -38,7 +48,7 @@
     left: 0;
     justify-content: center;
     align-items: center;
-    background-color: rgba(20, 20, 20, 0.5);
+    background-color: rgba(20, 20, 20, 0.7);
 }
 
 #gameStartModal {
@@ -48,8 +58,28 @@
 #gameOverModal {
     display: none;
     font-family: MarioFont, sans-serif;
-    font-size: 2.6rem;
     color: #fff;
+}
+
+.gameWinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: column;
+}
+
+.gameWinner p {
+    font-size: 2.6rem;
+    transition: 1s all ease;
+    position: relative;
+    opacity: 0;
+    letter-spacing: 3px;
+}
+
+.gameWinner img {
+    position: relative;
+    transition: top 0.4s ease-in;
+    top: -100vh;
 }
 
 #charSelect, #roomSelect {

@@ -1,6 +1,7 @@
 const socket = io();
 let fullBoard;
 let boardSize = 3;
+let waitForPlayer;
 
 const characters = [
     {
@@ -30,9 +31,12 @@ window.onload = function() {
     joinRoomHandler();
 };
 
-const gameStart = () => {
+const gameStart = async () => {
     if(!clientPlayer.gameStarted) {
-        document.getElementById('gameRoomName').innerText = clientPlayer.room;
+        await clearInterval(waitForPlayer);
+        document
+            .getElementById('gameBoard')
+            .innerHTML = '';
         buildGameBoard(boardSize);
         cellClickHandler();
         if (clientPlayer.id === 1) clientPlayer.isTurn = true;
@@ -70,6 +74,20 @@ const joinRoomHandler = () => {
     document.getElementById('roomBtn').addEventListener('click', joinRoom);
 };
 
+const assignCharacterToPlayer = (playerId) => {
+    // Assign character to Player
+    switch(playerId) {
+        case 1:
+            clientPlayer.character = characters[0];
+            break;
+        case 2:
+            clientPlayer.character = characters[1];
+            break;
+        default:
+            clientPlayer.character = null;
+    }
+};
+
 // Select Player functionality
 
 const selectPlayer = () => {
@@ -81,17 +99,7 @@ const selectPlayer = () => {
     // Player ID = Value of Selected Player Radio Button
     clientPlayer.id = parseInt(playerSelected.value);
 
-    // Assign character to Player
-    switch(clientPlayer.id) {
-        case 1:
-            clientPlayer.character = characters[0];
-            break;
-        case 2:
-            clientPlayer.character = characters[1];
-            break;
-        default:
-            clientPlayer.character = null;
-    }
+    assignCharacterToPlayer(clientPlayer.id);
 
     // Remove Select Player Modal
     document.getElementById('gameStartModal').style.display = 'none';
@@ -99,7 +107,28 @@ const selectPlayer = () => {
     // Emit Player Selection to Server
     socket.emit('playerSelectionToServer', clientPlayer);
 
+    document.getElementById('gameRoomName').innerText = clientPlayer.room;
+
     // If Opponent has Selected Player Start Game
+    if(!opponentPlayer.id) {
+        let waitForPlayerCounter = 0;
+        document
+            .getElementById('gameBoard')
+            .innerHTML = `<div class="wait-for-player">Waiting For Player</div>`;
+
+        waitForPlayer = setInterval(() => {
+            document
+                .querySelector('.wait-for-player')
+                .innerText += '.';
+            waitForPlayerCounter++;
+            if(waitForPlayerCounter > 4) {
+                document
+                    .querySelector('.wait-for-player')
+                    .innerText = `Waiting For Player.`;
+                waitForPlayerCounter = 0;
+            }
+        }, 700);
+    }
     if(opponentPlayer.id !== null) {
         gameStart();
     }
@@ -121,13 +150,14 @@ const cellClicked = (e) => {
         const col = e.target.getAttribute('col') - 1;
 
         // Set Cell = to Player ID
-        fullBoard[row][col] = clientPlayer.id;
+        if(fullBoard[row][col] === 0) {
+            fullBoard[row][col] = clientPlayer.id;
+            // Send Updated Board to Server
+            socket.emit('updateBoard', {fullBoard, clientPlayer});
 
-        // Send Updated Board to Server
-        socket.emit('updateBoard', {fullBoard, clientPlayer});
-
-        // Disallow Players Turn Until Opponent Has Had Their Turn
-        clientPlayer.isTurn = false
+            // Disallow Players Turn Until Opponent Has Had Their Turn
+            clientPlayer.isTurn = false
+        }
     }else{
         alert('Its not your turn')
     }
@@ -197,10 +227,17 @@ const checkWinCondition = (player) => {
     checkDiag2(player);
 };
 
+const winAnimation = () => {
+    document.querySelector('.gameWinner').children[0].style.opacity = '1';
+    document.querySelector('.gameWinner').children[2].style.top = '0';
+    window.requestAnimationFrame(winAnimation);
+};
+
 const showWin = (character) => {
     const gameOverScreen = document.getElementById('gameOverModal');
-    gameOverScreen.innerHTML = `<div class="gameWinner"><p>${character.name} Has Won!!!</p><br><img src="${character.img}" alt="${character.name}" /> </div>`;
     gameOverScreen.style.display = 'flex';
+    gameOverScreen.innerHTML = `<div class="gameWinner"><p>${character.name} Has Won!!!</p><br><img src="${character.img}" alt="${character.name}" /> </div>`;
+    window.requestAnimationFrame(winAnimation);
 };
 
 // Rebuild Board On Update From Server
