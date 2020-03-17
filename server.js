@@ -8,13 +8,21 @@ const PORT = process.env.PORT || 5000;
 const expressServer = app.listen(PORT, console.log(`Listening on port: ${PORT}`));
 const io = socketio(expressServer);
 
+const activeRooms = [];
+
 io.on('connection', (socket) => {
+    socket.emit('updateRooms', activeRooms);
     socket.on('joinRoom', roomToJoin => {
         if(!socket.adapter.rooms[roomToJoin] || socket.adapter.rooms[roomToJoin].length < 2 ){
             socket.join(roomToJoin);
             socket.emit('roomJoined');
             if(socket.adapter.rooms[roomToJoin].length === 2){
                 socket.to(roomToJoin).emit('getOpponent');
+            }else{
+                if(!activeRooms.some(room => room === roomToJoin)) {
+                    activeRooms.push(roomToJoin);
+                    io.emit('updateRooms', activeRooms);
+                }
             }
         }else{
             socket.emit('roomIsFull');

@@ -28,7 +28,7 @@ const opponentPlayer = {
 
 window.onload = function() {
     selectPlayerHandler();
-    joinRoomHandler();
+    createRoomHandler();
 };
 
 const gameStart = async () => {
@@ -61,17 +61,30 @@ const buildGameBoard = (boardSize) => {
     })
 };
 
-// Join Room Functionality
+// Create Room Functionality
 
-const joinRoom = () => {
+const createRoom = () => {
     clientPlayer.room = document.getElementById('roomName').value;
     socket.emit('joinRoom', clientPlayer.room);
 };
 
-// Apply click listener for joining room
+// Apply click listener for creating room
+
+const createRoomHandler = () => {
+    document.getElementById('roomBtn').addEventListener('click', createRoom);
+};
+
+const joinRoom = (e) => {
+    clientPlayer.room = e.target.innerText;
+    socket.emit('joinRoom', clientPlayer.room);
+};
 
 const joinRoomHandler = () => {
-    document.getElementById('roomBtn').addEventListener('click', joinRoom);
+    Array
+        .from(document.getElementById('roomList').children)
+        .forEach(li => {
+            li.addEventListener('click', joinRoom);
+        })
 };
 
 const assignCharacterToPlayer = (playerId) => {
@@ -316,4 +329,12 @@ socket.on('roomIsFull', () => {
     document
         .querySelector('.roomFullMessage')
         .innerHTML = '<span class="error-message">We are sorry but the room you have chosen is full, please enter a new room.</span>'
+});
+
+socket.on('updateRooms', rooms => {
+    document.getElementById('roomList').innerHTML = '';
+    rooms.forEach(room => {
+        document.getElementById('roomList').innerHTML += `<li>${room}</li>`
+    });
+    joinRoomHandler();
 });

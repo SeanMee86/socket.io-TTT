@@ -16,19 +16,25 @@
 <div id="gameBoard"></div>
 <div id="gameStartModal">
     <div id="roomSelect">
-        <div class="roomFullMessage"></div>
-        <p>
-            <label for="roomName">Enter Room Name: </label>
-            <input
-                    onfocus="(
-                        function(){
-                            document.querySelector('.roomFullMessage').innerHTML=''
-                        }
-                    )()"
-                    id="roomName"
-                    type="text" />
-        </p>
-        <button id="roomBtn">Join Room</button>
+        <div id="existingRooms">
+            Join Room
+            <ul id="roomList"></ul>
+        </div>
+        <div id="createRoom">
+            <div class="roomFullMessage"></div>
+            <p>
+                <label for="roomName">Create/Join Room: </label><br>
+                <input
+                        onfocus="(
+                            function(){
+                                document.querySelector('.roomFullMessage').innerHTML=''
+                            }
+                        )()"
+                        id="roomName"
+                        type="text" />
+            </p>
+            <button id="roomBtn">Join Room</button>
+        </div>
     </div>
     <div id="charSelect">
         <p><input name="player" id="player1" type="radio" value="1"><label for="player1">Player 1</label></p>
