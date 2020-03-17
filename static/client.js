@@ -137,7 +137,7 @@ const selectPlayer = () => {
             if(waitForPlayerCounter > 3) {
                 document
                     .querySelector('.wait-for-player')
-                    .innerText = `Waiting For Player`;
+                    .innerText = `Waiting For Player.`;
                 waitForPlayerCounter = 0;
             }
         }, 400);
