@@ -127,20 +127,20 @@ const selectPlayer = () => {
         let waitForPlayerCounter = 0;
         document
             .getElementById('gameBoard')
-            .innerHTML = `<div class="wait-for-player">Waiting For Player</div>`;
+            .innerHTML = `<div class="wait-for-player">Waiting For Player.</div>`;
 
         waitForPlayer = setInterval(() => {
             document
                 .querySelector('.wait-for-player')
                 .innerText += '.';
             waitForPlayerCounter++;
-            if(waitForPlayerCounter > 4) {
+            if(waitForPlayerCounter > 3) {
                 document
                     .querySelector('.wait-for-player')
                     .innerText = `Waiting For Player`;
                 waitForPlayerCounter = 0;
             }
-        }, 700);
+        }, 400);
     }
     if(opponentPlayer.id !== null) {
         gameStart();
