@@ -17,22 +17,23 @@
 <div id="gameStartModal">
     <div id="roomSelect">
         <div id="existingRooms">
-            Join Room
+            <span id="newRoomLink" class="joinCreateSwitch link">Start New Room</span>
+            <div class="roomFullMessage"></div>
+            <span class="create-join-room-title"><h2>Join Room</h2></span>
             <ul id="roomList"></ul>
         </div>
         <div id="createRoom">
-            <div class="roomFullMessage"></div>
-            <p>
-                <label for="roomName">Create/Join Room: </label><br>
-                <input
-                        onfocus="(
-                            function(){
-                                document.querySelector('.roomFullMessage').innerHTML=''
-                            }
-                        )()"
-                        id="roomName"
-                        type="text" />
-            </p>
+            <span id="createRoomLink" class="joinCreateSwitch link">Join Existing Room</span>
+            <div class="roomTakenMessage"></div>
+            <label for="roomName"><h2>Create/Join Room: </h2></label>
+            <input
+                    onfocus="(
+                        function(){
+                            document.querySelector('.roomTakenMessage').innerHTML=''
+                        }
+                    )()"
+                    id="roomName"
+                    type="text" />
             <button id="roomBtn">Join Room</button>
         </div>
     </div>

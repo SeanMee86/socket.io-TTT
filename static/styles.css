@@ -2,6 +2,11 @@ body {
     font-family: "Roboto", sans-serif;
 }
 
+.link:hover {
+    cursor: pointer;
+    color: #3e3e3e;
+}
+
 #gameBoard {
     font-size: 1.7rem;
     font-family: 'Roboto', sans-serif;
@@ -87,7 +92,7 @@ body {
 }
 
 #charSelect, #roomSelect {
-    width: 100%;
+    width: 90%;
     height: 40vh;
     max-width: 600px;
     background: #e3e3e3;
@@ -100,29 +105,87 @@ body {
     box-sizing: border-box;
 }
 
+.joinCreateSwitch {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 3px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: red;
+    border-radius: 3px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #b30000;
+}
+
 #roomList {
     list-style-type: none;
-    overflow: scroll;
-    width: 100%;
+    overflow-y: scroll;
+    width: 55%;
+    min-height: 20%;
 }
 
 #roomList li {
     margin-bottom: 10px;
 }
 
-#roomList li:hover {
-    cursor: pointer;
-    text-decoration: underline;
-}
-
 #createRoom, #existingRooms {
     position: relative;
-    width: 50%;
+    width: 100%;
     height: 100%;
-    display: flex;
     flex-flow: column;
     align-items: center;
     justify-content: center;
+}
+
+#existingRooms {
+    display: flex;
+}
+
+#createRoom {
+    display: none;
+}
+
+#createRoom h2 {
+    margin-bottom: 10px;
+}
+
+#createRoom button {
+    min-width: 160px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 0;
+    color: #fff;
+    background: #049cd8;
+    font-size: 1.2rem;
+}
+
+#createRoom button:hover {
+    cursor: pointer;
+    background-color: #1a73e8;
+}
+
+#createRoom input {
+    min-width: 215px;
+    border: 2px solid rgba(120,120,120, 0.6);
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 12px;
+    background: rgba(255,255,255, 0.8);
 }
 
 #charSelect {
@@ -131,7 +194,7 @@ body {
     justify-content: center;
 }
 
-.roomFullMessage {
+.roomFullMessage, .roomTakenMessage {
     text-align: center;
 }
 

@@ -1,7 +1,9 @@
+/******** Global Variables ********/
+
 const socket = io();
 let fullBoard;
 let boardSize = 3;
-let waitForPlayer;
+let waitForPlayerRef;
 
 const characters = [
     {
@@ -26,11 +28,28 @@ const opponentPlayer = {
     id: null
 };
 
+/******** End Global Variables ********/
+
+// Initialize Game
 window.onload = function() {
-    selectPlayerHandler();
-    createRoomHandler();
+    gameInitializer()
 };
 
+// Add Function Handlers
+const gameInitializer = () => {
+    addInitialHandlers();
+};
+
+
+// Holds our initial Function Handlers that must be added before the game has started
+const addInitialHandlers = () => {
+    selectPlayerHandler();
+    createRoomHandler();
+    joinOrCreateClickHandler();
+    clearRoomFullMessageHandler();
+};
+
+// Start game after both clients have selected a player
 const gameStart = async () => {
     if(!clientPlayer.gameStarted) {
         await clearInterval(waitForPlayer);
@@ -45,7 +64,6 @@ const gameStart = async () => {
 };
 
 // Initial Build of Tic Tac Toe Board in DOM
-
 const buildGameBoard = (boardSize) => {
     const boardRows = new Array(boardSize);
 
@@ -56,29 +74,29 @@ const buildGameBoard = (boardSize) => {
     fullBoard.forEach((row, rowInd) => {
         row.forEach((cell, cellInd) => {
             document.getElementById('gameBoard')
-                .innerHTML += `<div col='${cellInd+1}' row="${rowInd+1}" class="gameCell"> </div>`
+                .innerHTML += `<div col='${cellInd+1}' row="${rowInd+1}" class="gameCell"></div>`
         })
     })
 };
 
 // Create Room Functionality
-
 const createRoom = () => {
     clientPlayer.room = document.getElementById('roomName').value;
     socket.emit('joinRoom', clientPlayer.room);
 };
 
 // Apply click listener for creating room
-
 const createRoomHandler = () => {
     document.getElementById('roomBtn').addEventListener('click', createRoom);
 };
 
+// Join Room Functionality
 const joinRoom = (e) => {
     clientPlayer.room = e.target.innerText;
     socket.emit('joinRoom', clientPlayer.room);
 };
 
+// Loop through list of rooms and add click listener for Join Room Function
 const joinRoomHandler = () => {
     Array
         .from(document.getElementById('roomList').children)
@@ -87,6 +105,38 @@ const joinRoomHandler = () => {
         })
 };
 
+// Swap between Join and Create Room Screens
+const joinOrCreateRoom = (currentScreen, destinationScreen) => {
+    document.getElementById(currentScreen).style.display = 'none';
+    document.getElementById(destinationScreen).style.display = 'flex';
+};
+
+// Apply click listeners to Upper Right Links
+const joinOrCreateClickHandler = () => {
+    document
+        .getElementById('newRoomLink')
+        .addEventListener('click', () => {
+            joinOrCreateRoom('existingRooms', 'createRoom')
+        });
+    document
+        .getElementById('createRoomLink')
+        .addEventListener('click', () => {
+            joinOrCreateRoom('createRoom', 'existingRooms')
+        });
+};
+
+// Remove Room Full Error Message
+const clearRoomFullMessage = () => {
+    document.querySelector('.roomFullMessage').innerHTML = '';
+    document.querySelector('.roomTakenMessage').innerHTML = '';
+};
+
+// Add click listener to screen to clear Room Full Error Message
+const clearRoomFullMessageHandler = () => {
+    document.getElementById('roomSelect').addEventListener('click', clearRoomFullMessage);
+};
+
+// Assign character to player on player selection
 const assignCharacterToPlayer = (playerId) => {
     // Assign character to Player
     switch(playerId) {
@@ -101,8 +151,27 @@ const assignCharacterToPlayer = (playerId) => {
     }
 };
 
-// Select Player functionality
+// Show "Wait for player..." while waiting for opposing player
+const waitForPlayer = () => {
+    let waitForPlayerCounter = 0;
+    document
+        .getElementById('gameBoard')
+        .innerHTML = `<div class="wait-for-player">Waiting For Player.</div>`;
+    waitForPlayerRef = setInterval(() => {
+        document
+            .querySelector('.wait-for-player')
+            .innerText += '.';
+        waitForPlayerCounter++;
+        if(waitForPlayerCounter > 3) {
+            document
+                .querySelector('.wait-for-player')
+                .innerText = `Waiting For Player.`;
+            waitForPlayerCounter = 0;
+        }
+    }, 400);
+};
 
+// Select Player functionality
 const selectPlayer = () => {
     // Create Variable For Selected Player
     const playerSelected = Array
@@ -124,25 +193,8 @@ const selectPlayer = () => {
 
     // If Opponent has Selected Player Start Game
     if(!opponentPlayer.id) {
-        let waitForPlayerCounter = 0;
-        document
-            .getElementById('gameBoard')
-            .innerHTML = `<div class="wait-for-player">Waiting For Player.</div>`;
-
-        waitForPlayer = setInterval(() => {
-            document
-                .querySelector('.wait-for-player')
-                .innerText += '.';
-            waitForPlayerCounter++;
-            if(waitForPlayerCounter > 3) {
-                document
-                    .querySelector('.wait-for-player')
-                    .innerText = `Waiting For Player.`;
-                waitForPlayerCounter = 0;
-            }
-        }, 400);
-    }
-    if(opponentPlayer.id !== null) {
+        waitForPlayer();
+    }else{
         gameStart();
     }
 };
@@ -240,12 +292,14 @@ const checkWinCondition = (player) => {
     checkDiag2(player);
 };
 
+// Win Animation
 const winAnimation = () => {
     document.querySelector('.gameWinner').children[0].style.opacity = '1';
     document.querySelector('.gameWinner').children[2].style.top = '0';
     window.requestAnimationFrame(winAnimation);
 };
 
+// Apply Win Animation
 const showWin = (character) => {
     const gameOverScreen = document.getElementById('gameOverModal');
     gameOverScreen.style.display = 'flex';
@@ -277,7 +331,7 @@ const rebuildBoard = (lastPlayer) => {
     checkWinCondition(lastPlayer);
 };
 
-/************ Handlers for Server Events *************/
+/************ Server Event Handlers *************/
 
 // On Opposing Player Selection We Receive an Object Containing that Players ID
 socket.on('opponentHasSelected', (data) => {
@@ -328,13 +382,20 @@ socket.on('roomJoined', () => {
 socket.on('roomIsFull', () => {
     document
         .querySelector('.roomFullMessage')
+        .innerHTML = '<span class="error-message">We are sorry but the room you have chosen is full, please enter a new room.</span>';
+    document
+        .querySelector('.roomTakenMessage')
         .innerHTML = '<span class="error-message">We are sorry but the room you have chosen is full, please enter a new room.</span>'
 });
 
 socket.on('updateRooms', rooms => {
+    if(rooms.length === 0){
+        document.getElementById('existingRooms').style.display = 'none';
+        document.getElementById('createRoom').style.display = 'flex';
+    }
     document.getElementById('roomList').innerHTML = '';
     rooms.forEach(room => {
-        document.getElementById('roomList').innerHTML += `<li>${room}</li>`
+        document.getElementById('roomList').innerHTML += `<li class="link">${room}</li>`
     });
     joinRoomHandler();
 });
