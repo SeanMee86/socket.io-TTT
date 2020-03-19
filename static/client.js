@@ -408,10 +408,10 @@ socket.on('roomJoined', () => {
 socket.on('roomIsFull', () => {
     document
         .querySelector('.roomFullMessage')
-        .innerHTML = '<span class="error-message">We are sorry but the room you have chosen is full, please enter a new room.</span>';
+        .innerHTML = '<span class="error-message">We are sorry but the game you have chosen is full, please enter a new game.</span>';
     document
         .querySelector('.roomTakenMessage')
-        .innerHTML = '<span class="error-message">We are sorry but the room you have chosen is full, please enter a new room.</span>'
+        .innerHTML = '<span class="error-message">We are sorry but the game you have chosen is full, please enter a new game.</span>'
 });
 
 socket.on('updateRooms', rooms => {
