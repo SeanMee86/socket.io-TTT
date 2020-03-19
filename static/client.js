@@ -8,11 +8,13 @@ let waitForPlayerRef;
 const characters = [
     {
         name: 'Mario',
-        img: './assets/images/220px-MarioNSMBUDeluxe.png'
+        cellImg: './assets/images/220px-MarioNSMBUDeluxe.png',
+        iconImg: './assets/images/Mario.png'
     },
     {
         name: 'Luigi',
-        img: './assets/images/696px-Luigi_New_Super_Mario_Bros_U_Deluxe.png'
+        cellImg: './assets/images/696px-Luigi_New_Super_Mario_Bros_U_Deluxe.png',
+        iconImg: './assets/images/Masthead_luigi.17345b1513ac044897cfc243542899dce541e8dc.9afde10b.png'
     }
 ];
 
@@ -52,14 +54,23 @@ const addInitialHandlers = () => {
 // Start game after both clients have selected a player
 const gameStart = async () => {
     if(!clientPlayer.gameStarted) {
-        await clearInterval(waitForPlayer);
+        await clearInterval(waitForPlayerRef);
         document
             .getElementById('gameBoard')
             .innerHTML = '';
         buildGameBoard(boardSize);
         cellClickHandler();
         if (clientPlayer.id === 1) clientPlayer.isTurn = true;
-        clientPlayer.gameStarted = true
+        clientPlayer.gameStarted = true;
+        addPlayerIcons();
+        Array
+            .from(document.getElementsByClassName('playerIndicator'))
+            .filter(player => player.getAttribute('player') === '1')[0]
+            .style.border = '2px solid yellow';
+        Array
+            .from(document.getElementsByClassName('playerIndicator'))
+            .filter(player => player.getAttribute('player') !== '1')[0]
+            .style.border = '2px solid transparent';
     }
 };
 
@@ -76,6 +87,25 @@ const buildGameBoard = (boardSize) => {
             document.getElementById('gameBoard')
                 .innerHTML += `<div col='${cellInd+1}' row="${rowInd+1}" class="gameCell"></div>`
         })
+    })
+};
+
+// Add Players Icons to the Player Indicator Boxes
+const addPlayerIcons = () => {
+    const playerBoxes = Array.from(document.getElementsByClassName('playerIndicator'));
+    playerBoxes.forEach(box => {
+        switch(box.getAttribute('player')){
+            case '1':
+                box.style.backgroundImage = `url(${characters[0].iconImg})`;
+                box.className += ' playerIndicatorBackground';
+                break;
+            case '2':
+                box.style.backgroundImage = `url(${characters[1].iconImg})`;
+                box.className += ' playerIndicatorBackground';
+                break;
+            default:
+                box.style.background = '';
+        }
     })
 };
 
@@ -303,7 +333,7 @@ const winAnimation = () => {
 const showWin = (character) => {
     const gameOverScreen = document.getElementById('gameOverModal');
     gameOverScreen.style.display = 'flex';
-    gameOverScreen.innerHTML = `<div class="gameWinner"><p>${character.name} Has Won!!!</p><br><img src="${character.img}" alt="${character.name}" /> </div>`;
+    gameOverScreen.innerHTML = `<div class="gameWinner"><p>${character.name} Has Won!!!</p><br><img src="${character.cellImg}" alt="${character.name}" /> </div>`;
     window.requestAnimationFrame(winAnimation);
 };
 
@@ -319,7 +349,7 @@ const rebuildBoard = (lastPlayer) => {
                 .innerHTML += `<div 
                     col='${cellInd + 1}' 
                     row="${rowInd + 1}" 
-                    style="background: url(${cell === 1 ? characters[0].img : cell === 2 ? characters[1].img : ''}) center/50% no-repeat;" 
+                    style="background: url(${cell === 1 ? characters[0].cellImg : cell === 2 ? characters[1].cellImg : ''}) center/50% no-repeat;" 
                     class="gameCell"></div>`
         })
     });
@@ -360,6 +390,16 @@ socket.on('sendUpdate', board => {
 
     // Rebuild the Board with our New Global Board Array
     rebuildBoard(board.player);
+    console.log(board);
+    const playerIcons = Array
+        .from(document.getElementsByClassName('playerIndicator'))
+        .forEach(icon => {
+            if(parseInt(icon.getAttribute('player')) === board.player.id){
+                icon.style.border = '2px solid transparent';
+            }else{
+                icon.style.border = '2px solid yellow';
+            }
+        });
 });
 
 // Change Player Event is Only Emitted to the Player who DID NOT Trigger the Update Board Event To Server

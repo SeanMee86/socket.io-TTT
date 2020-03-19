@@ -208,6 +208,24 @@ body {
     color: red;
 }
 
+#playerContainer {
+    z-index: -1;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.playerIndicator {
+    width: 26vw;
+    height: 20vw;
+    background-size: 50%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.playerIndicatorBackground {
+    background-color: rgba(10,120,200,0.3);
+}
 
 input[disabled=disabled] ~ label {
     color: red;
@@ -218,5 +236,30 @@ input[disabled=disabled] ~ label {
         flex-flow: column;
         justify-content: center;
         align-items: center;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    #gameBoard {
+        width: 60vw;
+        height: 60vw;
+    }
+
+    #playerContainer {
+        top: -38vw;
+    }
+
+    .playerIndicator {
+        width: 15vw;
+        height: 15vw;
+    }
+
+    .playerIndicator[player='2'] {
+        margin-left: 0;
+    }
+
+    #spacer {
+        width: 60vw;
+        max-width: 800px;
     }
 }
