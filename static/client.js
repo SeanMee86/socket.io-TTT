@@ -54,7 +54,6 @@ const addInitialHandlers = () => {
 // Start game after both clients have selected a player
 const gameStart = async () => {
     if(!clientPlayer.gameStarted) {
-        await clearInterval(waitForPlayerRef);
         document
             .getElementById('gameBoard')
             .innerHTML = '';
@@ -183,22 +182,9 @@ const assignCharacterToPlayer = (playerId) => {
 
 // Show "Wait for player..." while waiting for opposing player
 const waitForPlayer = () => {
-    let waitForPlayerCounter = 0;
     document
         .getElementById('gameBoard')
-        .innerHTML = `<div class="wait-for-player">Waiting For Player.</div>`;
-    waitForPlayerRef = setInterval(() => {
-        document
-            .querySelector('.wait-for-player')
-            .innerText += '.';
-        waitForPlayerCounter++;
-        if(waitForPlayerCounter > 3) {
-            document
-                .querySelector('.wait-for-player')
-                .innerText = `Waiting For Player.`;
-            waitForPlayerCounter = 0;
-        }
-    }, 400);
+        .innerHTML = `<div class="wait-for-player">Waiting For Player...<br><div class="loader">Loading...</div></div>`;
 };
 
 // Select Player functionality
