@@ -41,6 +41,7 @@ body {
 }
 
 .wait-for-player {
+    white-space: nowrap;
     position: absolute;
     font-family: MarioFont, sans-serif;
     color: #fff;
