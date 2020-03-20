@@ -48,6 +48,10 @@ io.on('connection', (socket) => {
         }
     });
 
+    socket.on('initiateReset', currentRoom => {
+        socket.to(currentRoom).emit('getOpponent');
+    });
+
     socket.on('disconnect', () => {
         io.emit('playerDisconnect')
     });

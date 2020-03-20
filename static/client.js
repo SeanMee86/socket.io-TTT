@@ -3,7 +3,6 @@
 const socket = io();
 let fullBoard;
 let boardSize = 3;
-let waitForPlayerRef;
 
 const characters = [
     {
@@ -18,7 +17,7 @@ const characters = [
     }
 ];
 
-const clientPlayer = {
+let clientPlayer = {
     id: null,
     isTurn: false,
     room: null,
@@ -71,6 +70,11 @@ const gameStart = async () => {
             .filter(player => player.getAttribute('player') !== '1')[0]
             .style.border = '2px solid transparent';
     }
+};
+
+// Function to handle display of elements in the DOM
+const showHideElement = (element, display) => {
+    document.getElementById(element).style.display = display
 };
 
 // Initial Build of Tic Tac Toe Board in DOM
@@ -136,8 +140,8 @@ const joinRoomHandler = () => {
 
 // Swap between Join and Create Room Screens
 const joinOrCreateRoom = (currentScreen, destinationScreen) => {
-    document.getElementById(currentScreen).style.display = 'none';
-    document.getElementById(destinationScreen).style.display = 'flex';
+    showHideElement(currentScreen, 'none');
+    showHideElement(destinationScreen, 'flex');
 };
 
 // Apply click listeners to Upper Right Links
@@ -200,7 +204,7 @@ const selectPlayer = () => {
     assignCharacterToPlayer(clientPlayer.id);
 
     // Remove Select Player Modal
-    document.getElementById('gameStartModal').style.display = 'none';
+    showHideElement('gameStartModal','none');
 
     // Emit Player Selection to Server
     socket.emit('playerSelectionToServer', clientPlayer);
@@ -317,10 +321,43 @@ const winAnimation = () => {
 
 // Apply Win Animation
 const showWin = (character) => {
-    const gameOverScreen = document.getElementById('gameOverModal');
-    gameOverScreen.style.display = 'flex';
-    gameOverScreen.innerHTML = `<div class="gameWinner"><p>${character.name} Has Won!!!</p><br><img src="${character.cellImg}" alt="${character.name}" /> </div>`;
+    showHideElement('gameOverModal','flex');
+    document.getElementById('gameOverModal').innerHTML = `<div class="gameWinner"><p>${character.name} Has Won!!!</p><br><img src="${character.cellImg}" alt="${character.name}" /> </div>`;
     window.requestAnimationFrame(winAnimation);
+    resetGame();
+};
+
+// Reset the game board and show player selection screen.
+// Remove disabled attribute from opposing player
+// Emit the reset to the opposing player to see if they've selected a new player yet.
+// If they have then their selected player will once again be disabled
+const gameOverModalClick = () => {
+    document.getElementById('gameBoard').innerHTML = '';
+    showHideElement('gameOverModal','none');
+    showHideElement('gameStartModal', 'flex');
+    Array
+        .from(document.getElementsByName('player'))
+        .forEach(player => {
+            player.checked = false;
+            player
+                .getAttribute('disabled') === 'disabled' ? player.removeAttribute('disabled') : null;
+        });
+    socket.emit('initiateReset', clientPlayer.room);
+};
+
+// Reset Players and set Click listener on the game over modal
+const resetGame = () => {
+    clientPlayer = {
+        ...clientPlayer,
+        id: null,
+        isTurn: false,
+        gameStarted: false,
+        character: null
+    };
+    opponentPlayer.id = null;
+    document
+        .getElementById('gameOverModal')
+        .addEventListener('click', gameOverModalClick);
 };
 
 // Rebuild Board On Update From Server
@@ -376,8 +413,7 @@ socket.on('sendUpdate', board => {
 
     // Rebuild the Board with our New Global Board Array
     rebuildBoard(board.player);
-    console.log(board);
-    const playerIcons = Array
+    Array
         .from(document.getElementsByClassName('playerIndicator'))
         .forEach(icon => {
             if(parseInt(icon.getAttribute('player')) === board.player.id){
@@ -401,8 +437,8 @@ socket.on('getOpponent', () => {
 });
 
 socket.on('roomJoined', () => {
-    document.getElementById('roomSelect').style.display = 'none';
-    document.getElementById('charSelect').style.display = 'flex';
+    showHideElement('roomSelect', 'none');
+    showHideElement('charSelect', 'flex')
 });
 
 socket.on('roomIsFull', () => {
@@ -416,8 +452,8 @@ socket.on('roomIsFull', () => {
 
 socket.on('updateRooms', rooms => {
     if(rooms.length === 0){
-        document.getElementById('existingRooms').style.display = 'none';
-        document.getElementById('createRoom').style.display = 'flex';
+        showHideElement('existingRooms', 'none');
+        showHideElement('createRoom', 'flex');
     }
     document.getElementById('roomList').innerHTML = '';
     rooms.forEach(room => {
