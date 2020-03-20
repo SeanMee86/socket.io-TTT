@@ -1,5 +1,9 @@
 body {
     font-family: "Roboto", sans-serif;
+    height: 100vh;
+    background-image: url(./assets/images/mario-background-wqhd-1440p-wallpaper.jpg);
+    background-size: cover;
+    background-position: bottom;
 }
 
 .link:hover {
@@ -15,7 +19,7 @@ body {
     max-height: 800px;
     width: 80vw;
     height: 80vw;
-    background: beige;
+    background: rgba(120, 120, 120, 0.3);
     margin: auto;
     display: grid;
     grid-template-columns: auto auto auto;
@@ -28,18 +32,23 @@ body {
 }
 
 #gameRoomName {
-    font-family: 'Roboto', sans-serif;
+    font-family: MarioFont, sans-serif;
     padding: 20px;
     text-align: center;
     font-size: 2.7rem;
+    color: #fff;
+    letter-spacing: 3px;
 }
 
 .wait-for-player {
-    white-space: nowrap;
     position: absolute;
+    font-family: MarioFont, sans-serif;
+    color: #fff;
+    letter-spacing: 3px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    max-height: 100%;
 }
 
 .gameCell {
@@ -58,7 +67,7 @@ body {
     left: 0;
     justify-content: center;
     align-items: center;
-    background-color: rgba(20, 20, 20, 0.7);
+    background-color: rgba(20, 20, 20, 0.8);
 }
 
 #gameStartModal {
@@ -167,7 +176,8 @@ body {
     margin-bottom: 10px;
 }
 
-#createRoom button {
+#createRoom button,
+#charSelect button {
     min-width: 160px;
     padding: 5px;
     border-radius: 5px;
@@ -177,7 +187,8 @@ body {
     font-size: 1.2rem;
 }
 
-#createRoom button:hover {
+#createRoom button:hover,
+#charSelect button:hover {
     cursor: pointer;
     background-color: #1a73e8;
 }
@@ -232,6 +243,61 @@ body {
 
 input[disabled=disabled] ~ label {
     color: red;
+}
+
+#playerSelectContainer {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#playerSelectContainer p {
+    position: relative;
+    width: 50%;
+}
+
+#playerSelectContainer p input {
+    width: 50px;
+    height: 50px;
+    visibility: hidden;
+    margin: 0;
+    z-index: 1;
+    position: absolute;
+    top: -50px;
+}
+
+#playerSelectContainer p label {
+    position: absolute;
+    height: 60px;
+    width: 60px;
+    top: -60px;
+    border: 2px solid transparent;
+}
+
+#playerSelectContainer p input ~ label {
+    background-size: 75%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#playerSelectContainer p input[value='1'] ~ label {
+    background-image: url(./assets/images/Mario.png);
+}
+
+#playerSelectContainer p input[value='2'] ~ label {
+    background-image: url(./assets/images/Masthead_luigi.17345b1513ac044897cfc243542899dce541e8dc.9afde10b.png);
+}
+
+#playerSelectContainer p input:checked ~ label {
+    border-color: yellow;
+}
+
+#playerSelectContainer p input[disabled='disabled'] ~ label {
+    opacity: .5;
+}
+
+#playerSelectContainer p:nth-child(2) label,
+#playerSelectContainer p:nth-child(2) input {
+    right: 0;
 }
 
 @media screen and (max-width: 550px){
