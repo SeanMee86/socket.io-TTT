@@ -11,11 +11,13 @@ const io = socketio(expressServer);
 const activeRooms = [];
 
 io.on('connection', (socket) => {
+    let roomName;
     socket.emit('updateRooms', activeRooms);
     socket.on('joinRoom', roomToJoin => {
         if(!socket.adapter.rooms[roomToJoin] || socket.adapter.rooms[roomToJoin].length < 2 ){
             socket.join(roomToJoin);
             socket.emit('roomJoined');
+            roomName = roomToJoin;
             if(socket.adapter.rooms[roomToJoin].length === 2){
                 socket.to(roomToJoin).emit('getOpponent');
             }else{
@@ -53,6 +55,8 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        io.emit('playerDisconnect')
+        if(roomName !== undefined) {
+            socket.broadcast.to(roomName).emit('playerDisconnect');
+        }
     });
 });

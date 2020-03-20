@@ -489,3 +489,12 @@ socket.on('updateRooms', rooms => {
     });
     joinRoomHandler();
 });
+
+socket.on('playerDisconnect', () => {
+    Array
+        .from(document.getElementsByName('player'))
+        .forEach(player => {
+        player.removeAttribute('disabled');
+    });
+    opponentPlayer.id = null;
+});
