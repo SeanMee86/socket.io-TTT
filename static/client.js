@@ -14,8 +14,14 @@ const characters = [
         name: 'Luigi',
         cellImg: './assets/images/696px-Luigi_New_Super_Mario_Bros_U_Deluxe.png',
         iconImg: './assets/images/Masthead_luigi.17345b1513ac044897cfc243542899dce541e8dc.9afde10b.png'
+    },
+    {
+        name: 'Princess Peach',
+        cellImg: './assets/images/Princess_Peach_SMP.png'
     }
 ];
+
+let gameOver = false;
 
 let clientPlayer = {
     id: null,
@@ -51,7 +57,7 @@ const addInitialHandlers = () => {
 };
 
 // Start game after both clients have selected a player
-const gameStart = async () => {
+const gameStart = () => {
     if(!clientPlayer.gameStarted) {
         document
             .getElementById('gameBoard')
@@ -258,6 +264,15 @@ const cellClickHandler = () => {
 
 /********* Win Conditions *********/
 
+// Check for Cat's Game
+const catsGame = () => {
+    if(!gameOver) {
+        fullBoard
+            .reduce((acc, val) => acc.concat(val), [])
+            .filter(cellValue => cellValue === 0).length === 0 ? showCatsGame() : null;
+    }
+};
+
 // Check for Win by Row Completion
 const checkRow = (player) => {
     fullBoard
@@ -266,7 +281,7 @@ const checkRow = (player) => {
         )
         .forEach(row => {
             if(row.length === boardSize) {
-                showWin(player.character)
+                showWin(player.character);
             }
         });
 };
@@ -281,7 +296,7 @@ const checkCol = (player) => {
         )
         .forEach(col => {
             if(col.length === boardSize) {
-                showWin(player.character)
+                showWin(player.character);
             }
         });
 };
@@ -310,6 +325,7 @@ const checkWinCondition = (player) => {
     checkCol(player);
     checkDiag1(player);
     checkDiag2(player);
+    catsGame();
 };
 
 // Win Animation
@@ -324,6 +340,15 @@ const showWin = (character) => {
     showHideElement('gameOverModal','flex');
     document.getElementById('gameOverModal').innerHTML = `<div class="gameWinner"><p>${character.name} Has Won!!!</p><br><img src="${character.cellImg}" alt="${character.name}" /> </div>`;
     window.requestAnimationFrame(winAnimation);
+    gameOver = true;
+    resetGame();
+};
+
+const showCatsGame = () => {
+    showHideElement('gameOverModal','flex');
+    document.getElementById('gameOverModal').innerHTML = `<div class="gameWinner"><p>Cat's Game...</p><br><img src="${characters[2].cellImg}" alt="${characters[2].name}" /> </div>`;
+    window.requestAnimationFrame(winAnimation);
+    gameOver = true;
     resetGame();
 };
 
@@ -335,6 +360,9 @@ const gameOverModalClick = () => {
     document.getElementById('gameBoard').innerHTML = '';
     showHideElement('gameOverModal','none');
     showHideElement('gameStartModal', 'flex');
+    gameOver = false;
+    // Fail check to make sure isTurn has been set to false before new game has been initiated.
+    if(clientPlayer.isTurn) clientPlayer.isTurn = false;
     Array
         .from(document.getElementsByName('player'))
         .forEach(player => {
