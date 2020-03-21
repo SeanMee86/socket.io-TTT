@@ -106,16 +106,22 @@ body {
     width: 90%;
     height: 40vh;
     max-width: 600px;
+    position: relative;
+    padding: 20px;
+    box-sizing: border-box;
     background-color: #e3e3e3;
     /*background: url("./assets/images/325-3256047_bricks-wall-8-bit-super-mario-brick-hd.png") center;*/
     /*background-size: 200%;*/
 }
 
+#charSelect .joinCreateSwitch {
+    bottom: 20px;
+    right: 20px;
+    top: unset;
+}
+
 #roomSelect {
     display: flex;
-    position: relative;
-    padding: 20px;
-    box-sizing: border-box;
 }
 
 .joinCreateSwitch {

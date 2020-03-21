@@ -54,6 +54,7 @@ const addInitialHandlers = () => {
     createRoomHandler();
     joinOrCreateClickHandler();
     clearRoomFullMessageHandler();
+    leaveGameHandler();
 };
 
 // Start game after both clients have selected a player
@@ -412,6 +413,14 @@ const rebuildBoard = (lastPlayer) => {
     checkWinCondition(lastPlayer);
 };
 
+const leaveGame = () => {
+    socket.emit('leavingGame', {room: clientPlayer.room})
+};
+
+const leaveGameHandler = () => {
+    document.getElementById('leaveRoomLink').addEventListener('click', leaveGame);
+};
+
 /************ Server Event Handlers *************/
 
 // On Opposing Player Selection We Receive an Object Containing that Players ID
@@ -488,6 +497,11 @@ socket.on('updateRooms', rooms => {
         document.getElementById('roomList').innerHTML += `<li class="link">${room}</li>`
     });
     joinRoomHandler();
+});
+
+socket.on('leftGame', () => {
+    showHideElement('charSelect', 'none');
+    showHideElement('roomSelect', 'flex');
 });
 
 socket.on('playerDisconnect', () => {

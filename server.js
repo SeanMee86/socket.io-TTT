@@ -10,10 +10,23 @@ const io = socketio(expressServer);
 
 const activeRooms = [];
 
+const removeRoom = (room) => {
+    if(!io.sockets.adapter.rooms[room]){
+        activeRooms.splice(activeRooms.indexOf(room), 1);
+        io.emit('updateRooms', activeRooms);
+    }
+};
+
 io.on('connection', (socket) => {
     let roomName;
     socket.emit('updateRooms', activeRooms);
     socket.on('joinRoom', roomToJoin => {
+        const currentRooms = Object.keys(socket.rooms);
+        if(currentRooms.length > 1) {
+            currentRooms.forEach(room => {
+                room !== socket.id && room !== roomToJoin ? socket.leave(room, err => err) : null;
+            })
+        }
         if(!socket.adapter.rooms[roomToJoin] || socket.adapter.rooms[roomToJoin].length < 2 ){
             socket.join(roomToJoin);
             socket.emit('roomJoined');
@@ -54,9 +67,23 @@ io.on('connection', (socket) => {
         socket.to(currentRoom).emit('getOpponent');
     });
 
+    socket.on('leavingGame', () => {
+        const rooms = Object.keys(socket.rooms);
+        rooms.forEach((room) => {
+            if(room !== socket.id) {
+                socket.leave(room, (err) => {
+                    socket.emit('leftGame');
+                    removeRoom(room);
+                    return err;
+                });
+            }
+        })
+    });
+
     socket.on('disconnect', () => {
         if(roomName !== undefined) {
             socket.broadcast.to(roomName).emit('playerDisconnect');
+            removeRoom(roomName);
         }
     });
 });
