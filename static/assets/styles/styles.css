@@ -1,7 +1,7 @@
 body {
     font-family: "Roboto", sans-serif;
     height: 100vh;
-    background-image: url(./assets/images/mario-background-wqhd-1440p-wallpaper.jpg);
+    background-image: url(../images/mario-background-wqhd-1440p-wallpaper.jpg);
     background-size: cover;
     background-position: bottom;
 }
@@ -28,7 +28,7 @@ body {
 
 @font-face {
     font-family: 'MarioFont';
-    src: url("./assets/fonts/SuperPlumberBrothers-y00V.ttf")
+    src: url("../fonts/SuperPlumberBrothers-y00V.ttf")
 }
 
 #gameRoomName {
@@ -287,11 +287,11 @@ input[disabled=disabled] ~ label {
 }
 
 #playerSelectContainer p input[value='1'] ~ label {
-    background-image: url(./assets/images/Mario.png);
+    background-image: url(../images/Mario.png);
 }
 
 #playerSelectContainer p input[value='2'] ~ label {
-    background-image: url(./assets/images/Masthead_luigi.17345b1513ac044897cfc243542899dce541e8dc.9afde10b.png);
+    background-image: url(../images/Masthead_luigi.17345b1513ac044897cfc243542899dce541e8dc.9afde10b.png);
 }
 
 #playerSelectContainer p input:checked ~ label {
