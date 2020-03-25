@@ -183,9 +183,11 @@ body {
 
 #createRoom h2 {
     margin-bottom: 10px;
+    white-space: nowrap;
 }
 
 button {
+    box-sizing: border-box;
     font-family: MarioFont, sans-serif;
     min-width: 160px;
     padding: 10px;
