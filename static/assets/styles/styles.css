@@ -185,22 +185,25 @@ body {
     white-space: nowrap;
 }
 
-button {
+span.link,
+span#roomBtn {
+    text-align: center;
     font-family: MarioFont, sans-serif;
     min-width: 160px;
     border-radius: 5px;
     color: #ed891a;
     background: #e2e715;
-    font-size: 1.3rem;
+    font-size: 1rem;
     border: 2px solid #ed891a;
     padding: 5px;
 }
 
-button.link {
-    font-size: 1rem;
+span#roomBtn {
+    font-size: 1.3rem;
 }
 
-button:hover {
+span.link:hover,
+span#roomBtn:hover {
     color: #ed891a;
     cursor: pointer;
     background-color: #fff;
