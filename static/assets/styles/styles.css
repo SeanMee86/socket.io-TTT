@@ -199,6 +199,12 @@ button {
     align-items: center;
 }
 
+@media screen and (max-height: 700px) {
+    button {
+        padding-top: 15px;
+    }
+}
+
 button.link {
     font-size: 1rem;
 }
