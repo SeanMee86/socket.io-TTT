@@ -203,6 +203,10 @@ button {
     button {
         padding-top: 15px;
     }
+
+    button.link {
+        padding-top: 12px;
+    }
 }
 
 button.link {
