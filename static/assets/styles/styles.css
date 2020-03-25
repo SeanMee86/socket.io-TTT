@@ -98,12 +98,12 @@ body {
 #charSelect, #roomSelect {
     width: 90%;
     height: 40vh;
+    min-height: 300px;
     max-width: 600px;
     position: relative;
     padding: 20px;
     box-sizing: border-box;
     background: #e3e3e3 url("../images/d6mmetf-e45edb72-d3f8-465d-907c-4f71c0de9faa.png") no-repeat bottom/cover;
-    /*background-size: 200%;*/
 }
 
 #charSelect .joinCreateSwitch {
