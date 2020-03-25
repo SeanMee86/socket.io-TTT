@@ -187,10 +187,10 @@ body {
 }
 
 button {
-    box-sizing: border-box;
+    vertical-align: middle;
     font-family: MarioFont, sans-serif;
     min-width: 160px;
-    padding: 5px;
+    padding: 10px;
     border-radius: 5px;
     color: #ed891a;
     background: #e2e715;
@@ -206,12 +206,6 @@ button:hover {
     color: #ed891a;
     cursor: pointer;
     background-color: #fff;
-}
-
-@media screen and (min-width: 767px){
-    button {
-        padding: 10px;
-    }
 }
 
 #createRoom input {
