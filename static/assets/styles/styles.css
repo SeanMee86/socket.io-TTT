@@ -1,38 +1,33 @@
+@font-face {
+    font-family: 'MarioFont';
+    src: url("../fonts/SuperMario256.ttf");
+}
+
 body {
-    font-family: "Roboto", sans-serif;
+    font-family: MarioFont, sans-serif;
+    color: #fff;
+    letter-spacing: .1rem;
     height: 100vh;
     background-image: url(../images/mario-background-wqhd-1440p-wallpaper.jpg);
     background-size: cover;
     background-position: bottom;
 }
 
-.link:hover {
-    cursor: pointer;
-    color: #3e3e3e;
-}
-
 #gameBoard {
     font-size: 1.7rem;
-    font-family: 'Roboto', sans-serif;
     position: relative;
     max-width: 800px;
     max-height: 800px;
     width: 80vw;
     height: 80vw;
-    background: rgba(120, 120, 120, 0.3);
+    background: rgba(200, 200, 200, 0.5);
     margin: auto;
     display: grid;
     grid-template-columns: auto auto auto;
     grid-template-rows: auto auto auto;
 }
 
-@font-face {
-    font-family: 'MarioFont';
-    src: url("../fonts/SuperPlumberBrothers-y00V.ttf")
-}
-
 #gameRoomName {
-    font-family: MarioFont, sans-serif;
     padding: 20px;
     text-align: center;
     font-size: 2.7rem;
@@ -43,7 +38,6 @@ body {
 .wait-for-player {
     white-space: nowrap;
     position: absolute;
-    font-family: MarioFont, sans-serif;
     color: #fff;
     letter-spacing: 3px;
     top: 50%;
@@ -77,7 +71,6 @@ body {
 
 #gameOverModal {
     display: none;
-    font-family: MarioFont, sans-serif;
     color: #fff;
 }
 
@@ -106,18 +99,17 @@ body {
     width: 90%;
     height: 40vh;
     max-width: 600px;
+    min-height: 300px;
     position: relative;
     padding: 20px;
     box-sizing: border-box;
-    background-color: #e3e3e3;
-    /*background: url("./assets/images/325-3256047_bricks-wall-8-bit-super-mario-brick-hd.png") center;*/
+    background: #e3e3e3 url("../images/d6mmetf-e45edb72-d3f8-465d-907c-4f71c0de9faa.png") no-repeat bottom/cover;
     /*background-size: 200%;*/
 }
 
 #charSelect .joinCreateSwitch {
-    bottom: 20px;
-    right: 20px;
-    top: unset;
+    top: 20px;
+    left: 20px;
 }
 
 #roomSelect {
@@ -127,7 +119,7 @@ body {
 .joinCreateSwitch {
     position: absolute;
     top: 0;
-    right: 0;
+    left: 0;
 }
 
 ::-webkit-scrollbar {
@@ -152,14 +144,24 @@ body {
 }
 
 #roomList {
+    margin-top: 0;
     list-style-type: none;
     overflow-y: scroll;
     width: 55%;
-    min-height: 20%;
+    min-height: 30%;
+    background: rgba(0,0,0,0.8);
+    border-radius: 5px;
+    padding: 20px
 }
 
 #roomList li {
     margin-bottom: 10px;
+    transition: 0.4s  ease;
+}
+
+#roomList li.link:hover {
+    cursor: pointer;
+    color: #e2e715;
 }
 
 #createRoom, #existingRooms {
@@ -183,21 +185,25 @@ body {
     margin-bottom: 10px;
 }
 
-#createRoom button,
-#charSelect button {
+button {
+    font-family: MarioFont, sans-serif;
     min-width: 160px;
-    padding: 5px;
+    padding: 10px;
     border-radius: 5px;
-    border: 0;
-    color: #fff;
-    background: #049cd8;
-    font-size: 1.2rem;
+    color: #ed891a;
+    background: #e2e715;
+    font-size: 1.3rem;
+    border: 2px solid #ed891a;
 }
 
-#createRoom button:hover,
-#charSelect button:hover {
+button.link {
+    font-size: 1rem;
+}
+
+button:hover {
+    color: #ed891a;
     cursor: pointer;
-    background-color: #1a73e8;
+    background-color: #fff;
 }
 
 #createRoom input {
@@ -255,28 +261,32 @@ input[disabled=disabled] ~ label {
 #playerSelectContainer {
     display: flex;
     flex-wrap: wrap;
+    margin-top: 70px;
 }
 
 #playerSelectContainer p {
     position: relative;
     width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #playerSelectContainer p input {
-    width: 50px;
-    height: 50px;
+    width: 80px;
+    height: 80px;
     visibility: hidden;
     margin: 0;
     z-index: 1;
     position: absolute;
-    top: -50px;
+    top: -80px;
 }
 
 #playerSelectContainer p label {
     position: absolute;
-    height: 60px;
-    width: 60px;
-    top: -60px;
+    height: 80px;
+    width: 80px;
+    top: -80px;
     border: 2px solid transparent;
 }
 
@@ -300,11 +310,6 @@ input[disabled=disabled] ~ label {
 
 #playerSelectContainer p input[disabled='disabled'] ~ label {
     opacity: .5;
-}
-
-#playerSelectContainer p:nth-child(2) label,
-#playerSelectContainer p:nth-child(2) input {
-    right: 0;
 }
 
 @media screen and (max-width: 550px){

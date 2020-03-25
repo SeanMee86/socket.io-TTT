@@ -71,7 +71,7 @@ socket.on('updateRooms', rooms => {
     }
     document.getElementById('roomList').innerHTML = '';
     rooms.forEach(room => {
-        document.getElementById('roomList').innerHTML += `<li class="link">${room}</li>`
+        document.getElementById('roomList').innerHTML += `<li class="link"><i class="fas fa-chevron-right"></i> ${room}</li>`
     });
     joinRoomHandler();
 });
