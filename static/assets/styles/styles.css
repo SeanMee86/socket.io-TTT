@@ -187,6 +187,7 @@ body {
 }
 
 button {
+    height: 40px;
     vertical-align: middle;
     font-family: MarioFont, sans-serif;
     min-width: 160px;
@@ -195,6 +196,7 @@ button {
     background: #e2e715;
     font-size: 1.3rem;
     border: 2px solid #ed891a;
+    padding: 0 20px;
 }
 
 button.link {
