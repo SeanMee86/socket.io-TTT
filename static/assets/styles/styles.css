@@ -186,7 +186,6 @@ body {
 }
 
 button {
-    margin: 0;
     font-family: MarioFont, sans-serif;
     min-width: 160px;
     border-radius: 5px;
@@ -194,8 +193,10 @@ button {
     background: #e2e715;
     font-size: 1.3rem;
     border: 2px solid #ed891a;
-    padding: 6px;
-    line-height: 1.15;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 button.link {

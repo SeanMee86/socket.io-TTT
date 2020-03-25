@@ -24,13 +24,13 @@
 <div id="gameStartModal">
     <div id="roomSelect">
         <div id="existingRooms">
-            <button id="newRoomLink" class="joinCreateSwitch link">Create New Game</button>
+            <button id="newRoomLink" class="joinCreateSwitch link"><span>Create New Game</span></button>
             <div class="roomFullMessage"></div>
             <span class="create-join-room-title"><h2>Join Game</h2></span>
             <ul id="roomList"></ul>
         </div>
         <div id="createRoom">
-            <button id="createRoomLink" class="joinCreateSwitch link">Join Existing Game</button>
+            <button id="createRoomLink" class="joinCreateSwitch link"><span>Join Existing Game</span></span>
             <div class="roomTakenMessage"></div>
             <label for="roomName"><h2>Create/Join Game: </h2></label>
             <input
@@ -41,16 +41,16 @@
                     )()"
                     id="roomName"
                     type="text" />
-            <button id="roomBtn">Join Game</button>
+                <button id="roomBtn"><span>Join Game</span></button>
         </div>
     </div>
     <div id="charSelect">
         <div id="playerSelectContainer">
             <p><input name="player" id="player1" type="radio" value="1"><label for="player1"></label></p>
             <p><input name="player" id="player2" type="radio" value="2"><label for="player2"></label></p>
-            <button id="charSelectBtn">Choose Player</button>
+            <button id="charSelectBtn"><span>Choose Player</span></button>
         </div>
-        <button id="leaveRoomLink" class="joinCreateSwitch link">Leave Game</button>
+        <button id="leaveRoomLink" class="joinCreateSwitch link"><span>Leave Game</span></button>
     </div>
 </div>
 <div id="gameOverModal"></div>
