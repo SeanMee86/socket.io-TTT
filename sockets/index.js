@@ -23,6 +23,7 @@ io.on('connection', (socket) => {
             socket.join(roomToJoin);
             socket.emit('roomJoined');
             roomName = roomToJoin;
+            console.log(socket.adapter.rooms[roomToJoin].length);
             if(socket.adapter.rooms[roomToJoin].length === 2){
                 socket.to(roomToJoin).emit('getOpponent');
             }else{
@@ -38,10 +39,7 @@ io.on('connection', (socket) => {
 
     socket.on('playerSelectionToServer', player => {
         if(io.sockets.adapter.sids[socket.id][player.room] !== undefined) {
-            socket.to(player.room).emit('opponentHasSelected', {
-                player,
-                message: 'Opponent Has Selected'
-            })
+            socket.to(player.room).emit('opponentHasSelected', {player})
         }
     });
 
