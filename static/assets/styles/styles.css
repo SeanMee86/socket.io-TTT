@@ -163,6 +163,10 @@ body {
     color: #e2e715;
 }
 
+#roomList li.link i {
+    margin-right: 5px;
+}
+
 #createRoom, #existingRooms {
     position: relative;
     width: 100%;
