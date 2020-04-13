@@ -198,7 +198,7 @@ button {
     background: #e2e715;
     font-size: 1.3rem;
     border: 2px solid #ed891a;
-    padding: 5px;
+    padding: 5px 20px;
     display: flex;
     justify-content: center;
     align-items: center;
