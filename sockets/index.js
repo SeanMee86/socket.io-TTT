@@ -9,15 +9,6 @@ const removeRoom = (room) => {
     }
 };
 
-const onlyAllowOneRoom = (roomToJoin, socket) => {
-    const currentRooms = Object.keys(socket.rooms);
-    if(currentRooms.length > 1) {
-        currentRooms.forEach(room => {
-            room !== socket.id && room !== roomToJoin ? socket.leave(room, err => err) : null;
-        })
-    }
-};
-
 io.on('connection', (socket) => {
     let roomName;
     socket.emit('updateRooms', activeRooms);
@@ -25,6 +16,12 @@ io.on('connection', (socket) => {
     socket.on('joinRoom', roomToJoin => {
         // Check to see if current socket already belongs to a room and remove them if they do.
         roomToJoin = roomToJoin.toLowerCase();
+        const currentRooms = Object.keys(socket.rooms);
+        if(currentRooms.length > 1) {
+            currentRooms.forEach(room => {
+                room !== socket.id && room !== roomToJoin ? socket.leave(room, err => err) : null;
+            })
+        }
         // onlyAllowOneRoom(roomToJoin, socket);
         if(socket.adapter.rooms[roomToJoin].length < 2 ){
             socket.join(roomToJoin);
@@ -40,7 +37,12 @@ io.on('connection', (socket) => {
 
     socket.on('createRoom', roomToJoin => {
         roomToJoin = roomToJoin.toLowerCase();
-        // onlyAllowOneRoom(roomToJoin, socket);
+        const currentRooms = Object.keys(socket.rooms);
+        if(currentRooms.length > 1) {
+            currentRooms.forEach(room => {
+                room !== socket.id && room !== roomToJoin ? socket.leave(room, err => err) : null;
+            })
+        }
         if(!socket.adapter.rooms[roomToJoin]){
             socket.join(roomToJoin);
             socket.emit('roomJoined');
