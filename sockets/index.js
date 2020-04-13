@@ -24,8 +24,6 @@ io.on('connection', (socket) => {
 
     socket.on('joinRoom', roomToJoin => {
         // Check to see if current socket already belongs to a room and remove them if they do.
-        roomToJoin = roomToJoin.toLowerCase();
-        console.log(roomToJoin);
         onlyAllowOneRoom(roomToJoin, socket);
         if(socket.adapter.rooms[roomToJoin].length < 2 ){
             socket.join(roomToJoin);
@@ -40,8 +38,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on('createRoom', roomToJoin => {
-        roomToJoin = roomToJoin.toLowerCase();
-        console.log(roomToJoin);
         onlyAllowOneRoom(roomToJoin, socket);
         if(!socket.adapter.rooms[roomToJoin]){
             socket.join(roomToJoin);
