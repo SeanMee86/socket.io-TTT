@@ -121,7 +121,7 @@ const addPlayerIcons = () => {
 
 // Create Room Functionality
 const createRoom = () => {
-    clientPlayer.room = document.getElementById('roomName').value.trim().toLowerCase();
+    clientPlayer.room = document.getElementById('roomName').value;
     socket.emit('createRoom', clientPlayer.room);
 };
 
