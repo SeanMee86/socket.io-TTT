@@ -19,7 +19,7 @@ const onlyAllowOneRoom = (roomToJoin, socket) => {
 };
 
 const scrubName = (roomName) => {
-    return roomName.trim();
+    return roomName.toLowerCase().trim();
 };
 
 io.on('connection', (socket) => {
