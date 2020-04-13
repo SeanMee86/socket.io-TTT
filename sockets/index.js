@@ -19,7 +19,7 @@ const onlyAllowOneRoom = (roomToJoin, socket) => {
 };
 
 const scrubName = (roomName) => {
-    return roomName.trim().toLowerCase()
+    return roomName.trim();
 };
 
 io.on('connection', (socket) => {
@@ -29,7 +29,7 @@ io.on('connection', (socket) => {
     socket.on('joinRoom', roomToJoin => {
         // Check to see if current socket already belongs to a room and remove them if they do.
         roomToJoin = scrubName(roomToJoin);
-        // onlyAllowOneRoom(roomToJoin, socket);
+        onlyAllowOneRoom(roomToJoin, socket);
         if(socket.adapter.rooms[roomToJoin].length < 2 ){
             socket.join(roomToJoin);
             socket.emit('roomJoined');
@@ -44,7 +44,7 @@ io.on('connection', (socket) => {
 
     socket.on('createRoom', roomToJoin => {
         roomToJoin = scrubName(roomToJoin);
-        // onlyAllowOneRoom(roomToJoin, socket);
+        onlyAllowOneRoom(roomToJoin, socket);
         if(!socket.adapter.rooms[roomToJoin]){
             socket.join(roomToJoin);
             socket.emit('roomJoined');
