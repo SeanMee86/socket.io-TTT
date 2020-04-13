@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'MarioFont';
-    src: url("../fonts/SuperPlumberBrothers-y00V.ttf");
+    src: url("../fonts/SuperMario256.ttf");
 }
 
 body {
@@ -87,6 +87,7 @@ body {
     position: relative;
     opacity: 0;
     letter-spacing: 3px;
+    text-align: center;
 }
 
 .gameWinner img {
@@ -238,18 +239,24 @@ button:hover {
     justify-content: center;
 }
 
-.roomFullMessage, .roomTakenMessage {
+.roomFullMessage,
+.roomTakenMessage {
     text-align: center;
+    position: absolute;
+    top: 20px;
+    width: 100%;
 }
 
 .error-message {
     border: 1px solid red;
     padding: 20px;
     position: absolute;
-    top: 7%;
     width: 70%;
     transform: translateX(-50%);
     color: red;
+    max-width: 600px;
+    line-height: 1.8rem;
+    font-size: 1.2rem;
 }
 
 #playerContainer {
@@ -359,5 +366,11 @@ input[disabled=disabled] ~ label {
     #spacer {
         width: 60vw;
         max-width: 800px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .wait-for-player {
+        font-size: 4.8vmin;
     }
 }

@@ -9,30 +9,48 @@ const removeRoom = (room) => {
     }
 };
 
+const onlyAllowOneRoom = (roomToJoin, socket) => {
+    const currentRooms = Object.keys(socket.rooms);
+    if(currentRooms.length > 1) {
+        currentRooms.forEach(room => {
+            room !== socket.id && room !== roomToJoin ? socket.leave(room, err => err) : null;
+        })
+    }
+};
+
 io.on('connection', (socket) => {
     let roomName;
     socket.emit('updateRooms', activeRooms);
+
     socket.on('joinRoom', roomToJoin => {
-        const currentRooms = Object.keys(socket.rooms);
-        if(currentRooms.length > 1) {
-            currentRooms.forEach(room => {
-                room !== socket.id && room !== roomToJoin ? socket.leave(room, err => err) : null;
-            })
-        }
-        if(!socket.adapter.rooms[roomToJoin] || socket.adapter.rooms[roomToJoin].length < 2 ){
+        // Check to see if current socket already belongs to a room and remove them if they do.
+        roomToJoin = roomToJoin.toLowerCase();
+        onlyAllowOneRoom(roomToJoin, socket);
+        if(socket.adapter.rooms[roomToJoin].length < 2 ){
             socket.join(roomToJoin);
             socket.emit('roomJoined');
             roomName = roomToJoin;
             if(socket.adapter.rooms[roomToJoin].length === 2){
                 socket.to(roomToJoin).emit('getOpponent');
-            }else{
-                if(!activeRooms.some(room => room === roomToJoin)) {
-                    activeRooms.push(roomToJoin);
-                    io.emit('updateRooms', activeRooms);
-                }
             }
         }else{
             socket.emit('roomIsFull');
+        }
+    });
+
+    socket.on('createRoom', roomToJoin => {
+        roomToJoin = roomToJoin.toLowerCase();
+        onlyAllowOneRoom(roomToJoin, socket);
+        if(!socket.adapter.rooms[roomToJoin]){
+            socket.join(roomToJoin);
+            socket.emit('roomJoined');
+            roomName = roomToJoin;
+            if(!activeRooms.some(room => room === roomToJoin)) {
+                activeRooms.push(roomToJoin);
+                io.emit('updateRooms', activeRooms);
+            }
+        }else{
+            socket.emit('roomAlreadyExists');
         }
     });
 

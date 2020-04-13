@@ -22,17 +22,18 @@
     <div class="playerIndicator" player="2"></div>
 </div>
 <div id="gameStartModal">
+    <div class="roomFullMessage"></div>
+    <div class="roomTakenMessage"></div>
     <div id="roomSelect">
         <div id="existingRooms">
             <button id="newRoomLink" class="joinCreateSwitch link"><span>Create New Game</span></button>
-            <div class="roomFullMessage"></div>
             <span class="create-join-room-title"><h2>Join Game</h2></span>
             <ul id="roomList"></ul>
         </div>
         <div id="createRoom">
             <button id="createRoomLink" class="joinCreateSwitch link"><span>Join Existing Game</span></button>
             <div class="roomTakenMessage"></div>
-            <label for="roomName"><h2>Create/Join Game: </h2></label>
+            <label for="roomName"><h2>Create New Game: </h2></label>
             <input
                     onfocus="(
                         function(){
@@ -41,7 +42,7 @@
                     )()"
                     id="roomName"
                     type="text" />
-                <button id="roomBtn"><span>Join Game</span></button>
+                <button id="roomBtn"><span>Create Game</span></button>
         </div>
     </div>
     <div id="charSelect">

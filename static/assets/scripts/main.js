@@ -122,7 +122,7 @@ const addPlayerIcons = () => {
 // Create Room Functionality
 const createRoom = () => {
     clientPlayer.room = document.getElementById('roomName').value.trim();
-    socket.emit('joinRoom', clientPlayer.room);
+    socket.emit('createRoom', clientPlayer.room);
 };
 
 // Apply click listener for creating room
@@ -132,7 +132,7 @@ const createRoomHandler = () => {
 
 // Join Room Functionality
 const joinRoom = (e) => {
-    clientPlayer.room = e.target.innerText
+    clientPlayer.room = e.target.innerText;
     socket.emit('joinRoom', clientPlayer.room);
 };
 

@@ -58,10 +58,13 @@ socket.on('roomJoined', () => {
 socket.on('roomIsFull', () => {
     document
         .querySelector('.roomFullMessage')
-        .innerHTML = '<span class="error-message">We are sorry but the game you have chosen is full, please enter a new game.</span>';
+        .innerHTML = '<span class="error-message">Oh No! That game is full, please select a new game.</span>';
+});
+
+socket.on('roomAlreadyExists', () => {
     document
         .querySelector('.roomTakenMessage')
-        .innerHTML = '<span class="error-message">We are sorry but the game you have chosen is full, please enter a new game.</span>'
+        .innerHTML = `<span class="error-message">Oh No! That game name has been taken. Please try another.</span>`;
 });
 
 socket.on('updateRooms', rooms => {
