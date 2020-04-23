@@ -348,6 +348,8 @@ input[disabled=disabled] ~ label {
     #gameBoard {
         width: 60vw;
         height: 60vw;
+        max-width: 625px;
+        max-height: 625px;
     }
 
     #playerContainer {
